@@ -23,11 +23,11 @@ struct Product{
 
 template <typename T> struct Specification
 {
-    virtual bool is_satisfied(T* item) = 0;
+    virtual bool is_satisfied(T* item) const = 0;
 };
 template <typename T> struct Filter
 {
-    virtual vector<T*> ProductFilter(vector<T*> items,Specification<T> &spec) = 0;
+    virtual vector<T*> ProductFilter(vector<T*> items, const Specification<T> &spec) = 0;
 };
 
 struct ColorSpecification: Specification<Product>
@@ -36,7 +36,7 @@ struct ColorSpecification: Specification<Product>
     ColorSpecification (Color color):color{color}{};
     
     
-    bool is_satisfied(Product *item) override
+    bool is_satisfied(Product *item) const override
     {
         return item->color == color;
     };
@@ -48,7 +48,7 @@ struct SizeSpecification: Specification<Product>
     SizeSpecification (Size size):size{size}{};
     
     
-    bool is_satisfied(Product *item) override
+    bool is_satisfied(Product *item) const override
     {
         return item->size == size;
     }
@@ -58,7 +58,7 @@ struct SizeSpecification: Specification<Product>
 struct BetterFilter:Filter<Product>
 {
     
-    vector<Product *> ProductFilter(vector<Product *> items, Specification<Product> &spec) override
+    vector<Product *> ProductFilter(vector<Product *> items, const Specification<Product> &spec) override
     {
         vector<Product*> result;
         
@@ -82,7 +82,7 @@ int main(int argc, const char * argv[]) {
     vector<Product*> items {&p1,&p2,&p3};
     ColorSpecification color{Color::blue};
     BetterFilter bf;
-    vector<Product*> result = bf.ProductFilter(items, color);
+    vector<Product*> result = bf.ProductFilter(items, ColorSpecification {Color::green});
     for(auto &item:result)
     {
         cout<< item->name<<endl;
